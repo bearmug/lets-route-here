@@ -4,6 +4,10 @@ import org.bearmug.Route;
 import org.bearmug.RoutingEngine;
 
 public class EngineClassic implements RoutingEngine {
+
+    public EngineClassic(Route[] edges) {
+    }
+
     @Override
     public long route(String source, String destination) {
         return 0;
