@@ -1,0 +1,12 @@
+language: scala
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.gradle
+
+after_success:
+  - ./gradlew jacocoTestReport
+  - bash <(curl -s https://codecov.io/bash) -t d5594316-4666-4dd7-bd3f-2e9c9b889420
