@@ -1,11 +1,11 @@
 package org.bearmug;
 
-public class Route {
+public class RouteLeg {
     private final String source;
     private final String destination;
     private final long travelTime;
 
-    public Route(String source, String destination, long travelTime) {
+    public RouteLeg(String source, String destination, long travelTime) {
         this.source = source;
         this.destination = destination;
         this.travelTime = travelTime;
