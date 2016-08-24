@@ -9,22 +9,37 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Java {@link RoutingEngine} version. Avoiding recursive implementations here for
+ * performance/call stack safety purposes.
+ */
 public class EngineClassic implements RoutingEngine {
 
-    private final Map<String, RouteVertice> peersMap = new HashMap<>();
+    private final Map<String, RouteVertice> reversedMap = new HashMap<>();
+    private final Map<String, RouteVertice> directMap = new HashMap<>();
 
     public EngineClassic(RouteLeg[] legs) {
         Arrays.stream(legs)
                 .collect(Collectors.collectingAndThen(
                         Collectors.groupingBy(RouteLeg::getDest), Function.identity()))
                 .entrySet()
-                .forEach(e -> peersMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue())));
+                .forEach(e -> {
+                    reversedMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue(), true));
+                });
+        Arrays.stream(legs)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.groupingBy(RouteLeg::getSrc), Function.identity()))
+                .entrySet()
+                .forEach(e -> {
+                    directMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue()));
+                });
     }
 
     /**
      * Reversed graph traversal Dijkstra approach used to find shortest path. Direct approach avoided to prevent
      * extra data structures population at beginning of each iteration.
-     * @param source source node to find route from
+     *
+     * @param source      source node to find route from
      * @param destination dest node to find route to
      * @return route cost
      */
@@ -45,7 +60,7 @@ public class EngineClassic implements RoutingEngine {
             }
 
             // deepen search tree
-            for (Map.Entry<String, Long> e : peersMap.get(current.getName()).getDirectPeers().entrySet()) {
+            for (Map.Entry<String, Long> e : reversedMap.get(current.getName()).getDirectPeers().entrySet()) {
                 if (visitedNodes.contains(e.getKey())) {
                     continue;
                 }

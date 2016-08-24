@@ -11,10 +11,14 @@ public class RouteVertice extends Vertice {
     private final Map<String, Long> directPeers;
 
     public RouteVertice(String name, Collection<RouteLeg> peers) {
+        this(name, peers, false);
+    }
+
+    public RouteVertice(String name, Collection<RouteLeg> peers, boolean reversed) {
         super(name);
         this.directPeers = Collections.unmodifiableMap(
                 peers.stream().collect(Collectors.toMap(
-                        RouteLeg::getSrc,
+                        reversed ? RouteLeg::getSrc : RouteLeg::getDest,
                         RouteLeg::getCost)));
     }
 
