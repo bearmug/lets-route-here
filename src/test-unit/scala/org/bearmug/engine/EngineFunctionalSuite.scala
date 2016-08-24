@@ -9,7 +9,7 @@ class EngineFunctionalSuite extends FunSuite {
 
   test("scala engine route cost is 0") {
     def engine = new EngineFunctional()
-    assertResult(0)(engine.route("source", "destination"))
+    assertResult(Array())(engine.route("source", "destination"))
   }
 
   test("scala engine tell that nearby is nothing") {
