@@ -44,19 +44,21 @@ public class EngineClassic implements RoutingEngine {
      * @return route cost
      */
     @Override
-    public long route(String source, String destination) {
+    public NodeVertice[] route(String source, String destination) {
 
         NavigableSet<NodeVertice> set = new TreeSet<>();
         Set<String> visitedNodes = new HashSet<>();
+        Deque<NodeVertice>res= new ArrayDeque<>();
         set.add(new NodeVertice(destination, 0));
         while (!set.isEmpty()) {
             // walk through the graph
             NodeVertice current = set.pollFirst();
             visitedNodes.add(current.getName());
+            res.push(current);
 
             // target node detected
             if (source.equals(current.getName())) {
-                return current.getCost();
+                return res.toArray(new NodeVertice[]{});
             }
 
             // deepen search tree
@@ -71,7 +73,7 @@ public class EngineClassic implements RoutingEngine {
                 set.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
             }
         }
-        return -1;
+        return new NodeVertice[]{};
     }
 
     @Override

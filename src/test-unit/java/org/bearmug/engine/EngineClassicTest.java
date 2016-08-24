@@ -2,34 +2,40 @@ package org.bearmug.engine;
 
 import org.bearmug.RouteLeg;
 import org.bearmug.RoutingEngine;
+import org.bearmug.vert.NodeVertice;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EngineClassicTest {
 
     @Test
     public void testEmptyRouteSet() {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{});
-        assertEquals(-1, engine.route("A", "B"));
+        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("A", "B")));
     }
 
     @Test
     public void testAlienSource() {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(-1, engine.route("None", "B"));
+        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("None", "B")));
     }
 
     @Test
     public void testAlienDestination() {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(-1, engine.route("A", "None"));
+        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("A", "None")));
     }
 
     @Test
     public void testTwoVertices() {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(100, engine.route("A", "B"));
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{new NodeVertice("A", 0), new NodeVertice("B", 100)},
+                engine.route("A", "B")));
     }
 
     @Test
@@ -37,7 +43,9 @@ public class EngineClassicTest {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "A", 200)});
-        assertEquals(200, engine.route("B", "A"));
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{new NodeVertice("B", 0), new NodeVertice("A", 200)},
+                engine.route("B", "A")));
     }
 
     @Test
@@ -46,7 +54,12 @@ public class EngineClassicTest {
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("A", "C", 201)});
-        assertEquals(200, engine.route("A", "C"));
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{
+                        new NodeVertice("A", 0),
+                        new NodeVertice("B", 100),
+                        new NodeVertice("C", 200)},
+                engine.route("A", "C")));
     }
 
     @Test
@@ -59,7 +72,13 @@ public class EngineClassicTest {
                 new RouteLeg("D", "C", 100),
                 new RouteLeg("A", "D", 1000),
                 new RouteLeg("D", "A", 100)});
-        assertEquals(300, engine.route("A", "C"));
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{
+                        new NodeVertice("A", 0),
+                        new NodeVertice("B", 100),
+                        new NodeVertice("D", 200),
+                        new NodeVertice("C", 300)},
+                engine.route("A", "C")));
     }
 
     @Test
@@ -71,7 +90,15 @@ public class EngineClassicTest {
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertEquals(500, engine.route("A", "F"));
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{
+                        new NodeVertice("A", 0),
+                        new NodeVertice("B", 100),
+                        new NodeVertice("C", 200),
+                        new NodeVertice("D", 300),
+                        new NodeVertice("E", 400),
+                        new NodeVertice("F", 500)},
+                engine.route("A", "F")));
     }
 
     @Test
@@ -158,3 +185,4 @@ public class EngineClassicTest {
         assertEquals(1, engine.nearby("B", 100).length);
     }
 }
+
