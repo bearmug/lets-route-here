@@ -60,7 +60,11 @@ public class EngineClassic implements RoutingEngine {
             }
 
             // deepen search tree
-            for (Map.Entry<String, Long> e : reversedMap.get(current.getName()).getDirectPeers().entrySet()) {
+            RouteVertice routeVertice = reversedMap.get(current.getName());
+            if (routeVertice == null) {
+                continue;
+            }
+            for (Map.Entry<String, Long> e : routeVertice.getDirectPeers().entrySet()) {
                 if (visitedNodes.contains(e.getKey())) {
                     continue;
                 }
