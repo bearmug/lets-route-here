@@ -71,7 +71,27 @@ public class EngineClassic implements RoutingEngine {
     }
 
     @Override
-    public RouteLeg[] nearby(String source, long maxTravelTime) {
-        return new RouteLeg[]{};
+    public String[] nearby(String source, long maxTravelTime) {
+        Stack<NodeVertice> stack = new Stack<>();
+        Set<String> res = new HashSet<>();
+        stack.push(new NodeVertice(source, 0));
+        while (!stack.empty()) {
+            NodeVertice current = stack.pop();
+            res.add(current.getName());
+
+            RouteVertice routeVertice = directMap.get(current.getName());
+            if (routeVertice == null) {
+                continue;
+            }
+
+            for (Map.Entry<String, Long> e : routeVertice.getDirectPeers().entrySet()) {
+                if (res.contains(e.getKey()) || current.getCost() + e.getValue() > maxTravelTime) {
+                    continue;
+                }
+                stack.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
+            }
+        }
+        res.remove(source);
+        return res.toArray(new String[]{});
     }
 }
