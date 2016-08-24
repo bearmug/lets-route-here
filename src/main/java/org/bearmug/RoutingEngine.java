@@ -1,8 +1,10 @@
 package org.bearmug;
 
+import org.bearmug.vert.NodeVertice;
+
 public interface RoutingEngine {
 
-    long route(String source, String destination);
+    NodeVertice[] route(String source, String destination);
 
-    Route[] nearby(String source, long maxTravelTime);
+    String[] nearby(String source, long maxTravelTime);
 }
