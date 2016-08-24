@@ -1,25 +1,25 @@
 package org.bearmug;
 
 public class RouteLeg {
-    private final String source;
-    private final String destination;
-    private final long travelTime;
+    private final String src;
+    private final String dest;
+    private final long cost;
 
-    public RouteLeg(String source, String destination, long travelTime) {
-        this.source = source;
-        this.destination = destination;
-        this.travelTime = travelTime;
+    public RouteLeg(String src, String dest, long cost) {
+        this.src = src;
+        this.dest = dest;
+        this.cost = cost;
     }
 
-    public String getSource() {
-        return source;
+    public String getSrc() {
+        return src;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDest() {
+        return dest;
     }
 
-    public long getTravelTime() {
-        return travelTime;
+    public long getCost() {
+        return cost;
     }
 }
