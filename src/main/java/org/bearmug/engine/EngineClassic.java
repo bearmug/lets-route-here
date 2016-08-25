@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  */
 public class EngineClassic implements RoutingEngine {
 
-    private final Map<String, RouteVertice> reversedMap = new HashMap<>();
     private final Map<String, RouteVertice> directMap = new HashMap<>();
 
     public EngineClassic(RouteLeg[] legs) {
