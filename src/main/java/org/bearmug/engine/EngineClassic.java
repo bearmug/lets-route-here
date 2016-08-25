@@ -7,7 +7,9 @@ import org.bearmug.vert.RouteVertice;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Java {@link RoutingEngine} version. Avoiding recursive implementations here for
@@ -48,16 +50,19 @@ public class EngineClassic implements RoutingEngine {
 
         NavigableSet<NodeVertice> set = new TreeSet<>();
         Set<String> visitedNodes = new HashSet<>();
-        Deque<NodeVertice>res= new ArrayDeque<>();
         set.add(new NodeVertice(destination, 0));
         while (!set.isEmpty()) {
             // walk through the graph
             NodeVertice current = set.pollFirst();
             visitedNodes.add(current.getName());
-            res.push(current);
 
             // target node detected
             if (source.equals(current.getName())) {
+                List<NodeVertice> res = new ArrayList<>();
+                while (current != null) {
+                    res.add(current);
+                    current = current.getParent();
+                }
                 return res.toArray(new NodeVertice[]{});
             }
 
@@ -70,7 +75,7 @@ public class EngineClassic implements RoutingEngine {
                 if (visitedNodes.contains(e.getKey())) {
                     continue;
                 }
-                set.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
+                set.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
             }
         }
         return new NodeVertice[]{};
@@ -94,7 +99,7 @@ public class EngineClassic implements RoutingEngine {
                 if (res.contains(e.getKey()) || current.getCost() + e.getValue() > maxTravelTime) {
                     continue;
                 }
-                stack.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
+                stack.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
             }
         }
         res.remove(source);

@@ -102,7 +102,6 @@ public class EngineClassicTest {
                 engine.route("A", "F")));
     }
 
-    @Ignore("Solve issue with stub routes")
     @Test
     public void testChainedPathLoop() {
         RoutingEngine engine = new EngineClassic(new RouteLeg[]{
