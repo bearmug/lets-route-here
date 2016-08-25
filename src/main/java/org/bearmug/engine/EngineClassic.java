@@ -15,17 +15,9 @@ import java.util.stream.Collectors;
  */
 public class EngineClassic implements RoutingEngine {
 
-    private final Map<String, RouteVertice> reversedMap = new HashMap<>();
     private final Map<String, RouteVertice> directMap = new HashMap<>();
 
     public EngineClassic(RouteLeg[] legs) {
-        Arrays.stream(legs)
-                .collect(Collectors.collectingAndThen(
-                        Collectors.groupingBy(RouteLeg::getDest), Function.identity()))
-                .entrySet()
-                .forEach(e -> {
-                    reversedMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue(), true));
-                });
         Arrays.stream(legs)
                 .collect(Collectors.collectingAndThen(
                         Collectors.groupingBy(RouteLeg::getSrc), Function.identity()))
@@ -48,21 +40,25 @@ public class EngineClassic implements RoutingEngine {
 
         NavigableSet<NodeVertice> set = new TreeSet<>();
         Set<String> visitedNodes = new HashSet<>();
-        Deque<NodeVertice>res= new ArrayDeque<>();
-        set.add(new NodeVertice(destination, 0));
+        set.add(new NodeVertice(source, 0));
         while (!set.isEmpty()) {
             // walk through the graph
             NodeVertice current = set.pollFirst();
             visitedNodes.add(current.getName());
-            res.push(current);
 
             // target node detected
-            if (source.equals(current.getName())) {
+            if (destination.equals(current.getName())) {
+                List<NodeVertice> res = new ArrayList<>();
+                while (current != null) {
+                    res.add(current);
+                    current = current.getParent();
+                }
+                Collections.reverse(res);
                 return res.toArray(new NodeVertice[]{});
             }
 
             // deepen search tree
-            RouteVertice routeVertice = reversedMap.get(current.getName());
+            RouteVertice routeVertice = directMap.get(current.getName());
             if (routeVertice == null) {
                 continue;
             }
@@ -70,7 +66,7 @@ public class EngineClassic implements RoutingEngine {
                 if (visitedNodes.contains(e.getKey())) {
                     continue;
                 }
-                set.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
+                set.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
             }
         }
         return new NodeVertice[]{};
@@ -94,7 +90,7 @@ public class EngineClassic implements RoutingEngine {
                 if (res.contains(e.getKey()) || current.getCost() + e.getValue() > maxTravelTime) {
                     continue;
                 }
-                stack.add(new NodeVertice(e.getKey(), current.getCost() + e.getValue()));
+                stack.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
             }
         }
         res.remove(source);
