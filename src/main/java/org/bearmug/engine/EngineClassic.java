@@ -7,9 +7,7 @@ import org.bearmug.vert.RouteVertice;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Java {@link RoutingEngine} version. Avoiding recursive implementations here for
@@ -21,13 +19,6 @@ public class EngineClassic implements RoutingEngine {
     private final Map<String, RouteVertice> directMap = new HashMap<>();
 
     public EngineClassic(RouteLeg[] legs) {
-        Arrays.stream(legs)
-                .collect(Collectors.collectingAndThen(
-                        Collectors.groupingBy(RouteLeg::getDest), Function.identity()))
-                .entrySet()
-                .forEach(e -> {
-                    reversedMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue(), true));
-                });
         Arrays.stream(legs)
                 .collect(Collectors.collectingAndThen(
                         Collectors.groupingBy(RouteLeg::getSrc), Function.identity()))
@@ -50,24 +41,25 @@ public class EngineClassic implements RoutingEngine {
 
         NavigableSet<NodeVertice> set = new TreeSet<>();
         Set<String> visitedNodes = new HashSet<>();
-        set.add(new NodeVertice(destination, 0));
+        set.add(new NodeVertice(source, 0));
         while (!set.isEmpty()) {
             // walk through the graph
             NodeVertice current = set.pollFirst();
             visitedNodes.add(current.getName());
 
             // target node detected
-            if (source.equals(current.getName())) {
+            if (destination.equals(current.getName())) {
                 List<NodeVertice> res = new ArrayList<>();
                 while (current != null) {
                     res.add(current);
                     current = current.getParent();
                 }
+                Collections.reverse(res);
                 return res.toArray(new NodeVertice[]{});
             }
 
             // deepen search tree
-            RouteVertice routeVertice = reversedMap.get(current.getName());
+            RouteVertice routeVertice = directMap.get(current.getName());
             if (routeVertice == null) {
                 continue;
             }
