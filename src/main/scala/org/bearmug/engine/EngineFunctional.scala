@@ -16,10 +16,10 @@ class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
     @tailrec
     def routeTail(set: TreeSet[NodeVertice], visited: Set[String], acc: List[NodeVertice]): List[NodeVertice] = {
 
-      if (set.isEmpty) acc
+      if (set.isEmpty) List.empty
       else {
         val current = set.head
-        if (!map.contains(current.getName)) acc
+        if (!map.contains(current.getName)) List.empty
         else if (destination.equals(current.getName)) acc ++ List(current)
         else {
           val nestedSet = map(current.getName)
