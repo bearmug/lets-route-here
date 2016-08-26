@@ -8,12 +8,12 @@ import org.scalatest.junit.JUnitRunner
 class EngineFunctionalSuite extends FunSuite {
 
   test("scala engine route cost is 0") {
-    def engine = new EngineFunctional()
+    def engine = new EngineFunctional(Array())
     assertResult(Array())(engine.route("source", "destination"))
   }
 
   test("scala engine tell that nearby is nothing") {
-    def engine = new EngineFunctional()
+    def engine = new EngineFunctional(Array())
     assertResult(Array())(engine.nearby("source", 100))
   }
 }
