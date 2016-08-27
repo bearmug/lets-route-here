@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.TreeSet
 import scala.math.Ordering
 
-class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
+class EngineInteropFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
 
   val map: Map[String, Array[RouteLeg]] = legs.groupBy(_.getSrc)
 
