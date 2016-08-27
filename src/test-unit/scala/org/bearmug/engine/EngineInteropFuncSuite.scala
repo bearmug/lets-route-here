@@ -7,28 +7,28 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class EngineFunctionalSuite extends FunSuite {
+class EngineInteropFuncSuite extends FunSuite {
 
-  test("scala engine route cost is 0") {
-    val engine = new EngineFunctional(Array())
+  test("engine route cost is 0") {
+    val engine = new EngineInteropFunc(Array())
     assertResult(Array())(engine.route("source", "destination"))
   }
 
-  test("scala engine tell that nearby is nothing") {
-    val engine = new EngineFunctional(Array())
+  test("engine tell that nearby is nothing") {
+    val engine = new EngineInteropFunc(Array())
     assertResult(Array())(engine.nearby("source", 100))
   }
 
-  test("scala ignore unknown destination") {
-    val engine = new EngineFunctional(Array(
+  test("ignore unknown destination") {
+    val engine = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(Array[NodeVertice]())(engine.route("A", "None"))
   }
 
 
-  test("scala route two vertices") {
-    val engine = new EngineFunctional(Array(
+  test("route two vertices") {
+    val engine = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(Array[NodeVertice](
@@ -37,8 +37,8 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("A", "B"))
   }
 
-  test("scala route through two vertices loop") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("route through two vertices loop") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "A", 200)))
 
@@ -48,8 +48,8 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("B", "A"))
   }
 
-  test("scala build triangle route") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("build triangle route") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("A", "C", 201)))
@@ -61,8 +61,8 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("A", "C"))
   }
 
-  test("scala build four vertices route") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("build four vertices route") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 1000),
       new RouteLeg("A", "C", 1000),
@@ -79,8 +79,8 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("A", "C"))
   }
 
-  test("scala detect chained shortest path") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("detect chained shortest path") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("C", "D", 100),
@@ -98,8 +98,8 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("A", "F"))
   }
 
-  test("scala chained path with loop") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("chained path with loop") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("C", "D", 100),
@@ -119,36 +119,36 @@ class EngineFunctionalSuite extends FunSuite {
     )(engine.route("A", "F"))
   }
 
-  test("scala nearby is empty") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby is empty") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(0)(engine.nearby("source", 100).length)
   }
 
-  test("scala nearby for empty direction") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby for empty direction") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(0)(engine.nearby("B", 100).length)
   }
 
-  test("scala nearby single node") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby single node") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(1)(engine.nearby("A", 100).length)
   }
 
-  test("scala nearby single node too far") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby single node too far") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(0)(engine.nearby("A", 99).length)
   }
 
-  test("scala nearby for two paths") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby for two paths") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("C", "D", 100),
@@ -159,8 +159,8 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(5)(engine.nearby("A", 500).length)
   }
 
-  test("scala nearby for alternative paths") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby for alternative paths") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("C", "D", 100),
@@ -171,8 +171,8 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(5)(engine.nearby("A", 1000).length)
   }
 
-  test("scala nearby for cycled two vertices") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby for cycled two vertices") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "A", 200)))
 
@@ -180,8 +180,8 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(0)(engine.nearby("B", 100).length)
   }
 
-  test("scala nearby with triangle") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby with triangle") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
       new RouteLeg("A", "C", 201)))
@@ -191,8 +191,8 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(2)(engine.nearby("A", 200).length)
   }
 
-  test("scala nearby four vertices") {
-    val engine: EngineFunctional = new EngineFunctional(Array(
+  test("nearby four vertices") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 1000),
       new RouteLeg("A", "C", 1000),
