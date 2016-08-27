@@ -11,6 +11,10 @@ class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
 
   val map: Map[String, Array[RouteLeg]] = legs.groupBy(_.getSrc)
 
+  val ord = new Ordering[NodeVertice] {
+    override def compare(x: NodeVertice, y: NodeVertice): Int = x.compareTo(y)
+  }
+
   override def route(source: String, destination: String): Array[NodeVertice] = {
 
     @tailrec
@@ -19,21 +23,18 @@ class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
       if (set.isEmpty) List.empty
       else {
         val current = set.head
-        if (!map.contains(current.getName)) List.empty
-        else if (destination.equals(current.getName)) acc ++ List(current)
+        if (destination.equals(current.getName)) acc ++ List(current)
         else {
-          val nestedSet = map(current.getName)
+          val nestedSet = if (!map.contains(current.getName)) Set.empty[NodeVertice]
+          else map(current.getName)
+            .filter(l => !visited.contains(l.getDest))
             .map { l => new NodeVertice(l.getDest, current.getCost + l.getCost) }
             .toSet[NodeVertice]
-
           routeTail(set - current ++ nestedSet, visited + current.getName, acc ++ List(current))
         }
       }
     }
 
-    val ord = new Ordering[NodeVertice] {
-      override def compare(x: NodeVertice, y: NodeVertice): Int = x.compareTo(y)
-    }
     routeTail(TreeSet(new NodeVertice(source, null, 0))(ord), Set(),
       List.empty).toArray[NodeVertice]
   }
