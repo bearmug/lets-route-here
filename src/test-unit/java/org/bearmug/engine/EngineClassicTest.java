@@ -3,7 +3,6 @@ package org.bearmug.engine;
 import org.bearmug.RouteLeg;
 import org.bearmug.RoutingEngine;
 import org.bearmug.vert.NodeVertice;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -122,6 +121,24 @@ public class EngineClassicTest {
                         new NodeVertice("E", 400),
                         new NodeVertice("F", 500)},
                 engine.route("A", "F")));
+    }
+
+    @Test
+    public void testTwoBranchesPath() {
+        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+                new RouteLeg("A", "B", 100),
+                new RouteLeg("B", "C", 100),
+                new RouteLeg("C", "D", 100),
+                new RouteLeg("A", "AA", 1),
+                new RouteLeg("AA", "AAA", 1)});
+
+        assertTrue(Arrays.equals(
+                new NodeVertice[]{
+                        new NodeVertice("A", 0),
+                        new NodeVertice("B", 100),
+                        new NodeVertice("C", 200),
+                        new NodeVertice("D", 300)},
+                engine.route("A", "D")));
     }
 
     @Test
