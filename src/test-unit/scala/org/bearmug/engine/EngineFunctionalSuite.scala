@@ -126,28 +126,28 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(0)(engine.nearby("source", 100).length)
   }
 
-  test("NearbyEmptyDirection") {
+  test("scala nearby for empty direction") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(0)(engine.nearby("B", 100).length)
   }
 
-  test("NearbySingle") {
+  test("scala nearby single node") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(1)(engine.nearby("A", 100).length)
   }
 
-  test("NearbySingleTooFar") {
+  test("scala nearby single node too far") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100)))
 
     assertResult(0)(engine.nearby("A", 99).length)
   }
 
-  test("NearbyTwoPaths") {
+  test("scala nearby for two paths") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
@@ -159,7 +159,7 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(5)(engine.nearby("A", 500).length)
   }
 
-  test("NearbyTwoPathsReachable") {
+  test("scala nearby for alternative paths") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
@@ -171,7 +171,7 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(5)(engine.nearby("A", 1000).length)
   }
 
-  test("NearbyTwoVerticesLoop") {
+  test("scala nearby for cycled two vertices") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "A", 200)))
@@ -180,7 +180,7 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(0)(engine.nearby("B", 100).length)
   }
 
-  test("NearbyTriangle") {
+  test("scala nearby with triangle") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 100),
@@ -191,7 +191,7 @@ class EngineFunctionalSuite extends FunSuite {
     assertResult(2)(engine.nearby("A", 200).length)
   }
 
-  test("NearbyFourVertices") {
+  test("scala nearby four vertices") {
     val engine: EngineFunctional = new EngineFunctional(Array(
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "C", 1000),

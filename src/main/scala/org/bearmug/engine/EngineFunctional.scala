@@ -47,10 +47,11 @@ class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
       if (stack.isEmpty) acc
       else {
         val current = stack.head
-        if (!map.contains(current.getName)) acc
+        if (!map.contains(current.getName))
+          nearbyTail(stack.tail, acc + current.getName)
         else {
           val nestedSet = map(current.getName)
-            .filter { l => current.getCost + l.getCost < maxTravelTime }
+            .filter { l => current.getCost + l.getCost <= maxTravelTime }
             .map { l => new NodeVertice(l.getDest, current.getCost + l.getCost) }
             .toList
 
@@ -59,6 +60,7 @@ class EngineFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
       }
     }
 
-    nearbyTail(List(new NodeVertice(source, null, 0)), Set.empty).toArray[String]
+    val srcNode: NodeVertice = new NodeVertice(source, null, 0)
+    (nearbyTail(List(srcNode), Set.empty) - source).toArray[String]
   }
 }
