@@ -1,7 +1,6 @@
 package org.bearmug.engine
 
 import org.bearmug.Routing
-import org.bearmug.vert.NodeVertice
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeSet
