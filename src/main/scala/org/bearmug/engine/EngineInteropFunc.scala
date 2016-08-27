@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.immutable.TreeSet
 import scala.math.Ordering
 
-class EngineInteropFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
+class EngineInteropFunc(legs: Array[RouteLeg]) extends RoutingEngine {
 
   val map: Map[String, Array[RouteLeg]] = legs.groupBy(_.getSrc)
 
@@ -47,20 +47,17 @@ class EngineInteropFunctional(legs: Array[RouteLeg]) extends RoutingEngine {
       if (stack.isEmpty) acc
       else {
         val current = stack.head
-        if (!map.contains(current.getName))
-          nearbyTail(stack.tail, acc + current.getName)
-        else {
-          val nestedSet = map(current.getName)
-            .filter { l => current.getCost + l.getCost <= maxTravelTime }
-            .map { l => new NodeVertice(l.getDest, current.getCost + l.getCost) }
-            .toList
+        val nestedSet = if (!map.contains(current.getName)) Set.empty[NodeVertice]
+        else map(current.getName)
+          .filter { l => current.getCost + l.getCost <= maxTravelTime }
+          .map { l => new NodeVertice(l.getDest, current.getCost + l.getCost) }
+          .toList
 
-          nearbyTail(stack.tail ++ nestedSet, acc + current.getName)
-        }
+        nearbyTail(stack.tail ++ nestedSet, acc + current.getName)
       }
     }
 
-    val srcNode: NodeVertice = new NodeVertice(source, null, 0)
+    val srcNode: NodeVertice = new NodeVertice(source, null, 0L)
     (nearbyTail(List(srcNode), Set.empty) - source).toArray[String]
   }
 }
