@@ -1,13 +1,17 @@
 package org.bearmug.engine
 
 import org.bearmug.Routing
+import org.bearmug.vert.NodeVertice
 
 import scala.annotation.tailrec
 import scala.collection.immutable.TreeSet
+import scala.math.Ordering
 
 class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
 
   val map: Map[String, Array[(String, String, Long)]] = legs.groupBy(_._1)
+
+  val ord: Ordering[(String, Long)] = Ordering.by(t => t._2)
 
   override def route(source: String, destination: String): Array[(String, Long)] = {
 
@@ -29,7 +33,7 @@ class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
       }
     }
 
-    routeTail(TreeSet(Tuple2(source, 0)), Set(), List.empty)
+    routeTail(TreeSet(Tuple2(source, 0L))(ord), Set(), List.empty)
       .toArray[(String, Long)]
   }
 
