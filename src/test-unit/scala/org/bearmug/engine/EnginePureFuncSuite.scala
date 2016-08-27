@@ -116,6 +116,22 @@ class EnginePureFuncSuite extends FunSuite {
     )(engine.route("A", "F"))
   }
 
+  test("two branches path") {
+    val engine: EnginePureFunc = new EnginePureFunc(Array(
+      Tuple3("A", "B", 100),
+      Tuple3("B", "C", 100),
+      Tuple3("C", "D", 100),
+      Tuple3("A", "AA", 1),
+      Tuple3("AA", "AAA", 1)))
+
+    assertResult(Array(
+      Tuple2("A", 0),
+      Tuple2("B", 100),
+      Tuple2("C", 200),
+      Tuple2("D", 300))
+    )(engine.route("A", "D"))
+  }
+
   test("nearby is empty") {
     val engine: EnginePureFunc = new EnginePureFunc(Array(
       Tuple3("A", "B", 100)))

@@ -10,30 +10,37 @@ class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
 
   val map: Map[String, Array[(String, String, Long)]] = legs.groupBy(_._1)
 
-  val ord: Ordering[(String, Long)] = Ordering.by(t => t._2)
+  class Node(val name: String, val cost: Long, val parent: Option[Node]) {}
+  val none: Node = new Node("None", 0L, null)
+  val ord: Ordering[Node] = Ordering.by(n => n.cost)
 
   override def route(source: String, destination: String): Array[(String, Long)] = {
 
     @tailrec
-    def routeTail(set: TreeSet[(String, Long)], visited: Set[String], acc: List[(String, Long)]): List[(String, Long)] = {
+    def routeTail(set: TreeSet[(Node)], visited: Set[String]): Node = {
 
-      if (set.isEmpty) List.empty
+      if (set.isEmpty) none
       else {
-        val current = set.head
-        if (destination.equals(current._1)) acc ++ List(current)
+        val current: Node = set.head
+        if (destination.equals(current.name)) current
         else {
-          val nestedSet = if (!map.contains(current._1)) Set.empty
-          else map(current._1)
-            .filter(l => !visited.contains(l._2))
-            .map { l => Tuple2(l._2, current._2 + l._3) }
-            .toSet[(String, Long)]
-          routeTail(set - current ++ nestedSet, visited + current._1, acc ++ List(current))
+          val nestedSet = if (!map.contains(current.name)) Set.empty
+          else map(current.name)
+            .filter { l => !visited.contains(l._2) }
+            .map { l => new Node(l._2, current.cost + l._3, Option(current)) }
+            .toSet[Node]
+          routeTail(set - current ++ nestedSet, visited + current.name)
         }
       }
     }
 
-    routeTail(TreeSet(Tuple2(source, 0L))(ord), Set(), List.empty)
-      .toArray[(String, Long)]
+    @tailrec
+    def unwrap(node: Node, acc: List[(String, Long)]): Array[(String, Long)] =
+      if (none.equals(node)) acc.toArray
+      else unwrap(node.parent.getOrElse(none), List((node.name, node.cost)) ++ acc)
+
+    unwrap(
+      routeTail(TreeSet(new Node(source, 0L, None))(ord), Set()), List())
   }
 
   override def nearby(source: String, maxTravelTime: Long): Array[String] = {

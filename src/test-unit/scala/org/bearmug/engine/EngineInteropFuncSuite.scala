@@ -119,6 +119,22 @@ class EngineInteropFuncSuite extends FunSuite {
     )(engine.route("A", "F"))
   }
 
+  test("two branches path") {
+    val engine: EngineInteropFunc = new EngineInteropFunc(Array(
+      new RouteLeg("A", "B", 100),
+      new RouteLeg("B", "C", 100),
+      new RouteLeg("C", "D", 100),
+      new RouteLeg("A", "AA", 1),
+      new RouteLeg("AA", "AAA", 1)))
+
+    assertResult(Array(
+      new NodeVertice("A", 0),
+      new NodeVertice("B", 100),
+      new NodeVertice("C", 200),
+      new NodeVertice("D", 300))
+    )(engine.route("A", "D"))
+  }
+
   test("nearby is empty") {
     val engine: EngineInteropFunc = new EngineInteropFunc(Array(
       new RouteLeg("A", "B", 100)))
