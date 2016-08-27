@@ -21,8 +21,8 @@ class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
         else {
           val nestedSet = if (!map.contains(current._1)) Set.empty
           else map(current._1)
-            .filter(l => !visited.contains(l._1))
-            .map { l => Tuple2(l._1, current._2 + l._3) }
+            .filter(l => !visited.contains(l._2))
+            .map { l => Tuple2(l._2, current._2 + l._3) }
             .toSet[(String, Long)]
           routeTail(set - current ++ nestedSet, visited + current._1, acc ++ List(current))
         }
