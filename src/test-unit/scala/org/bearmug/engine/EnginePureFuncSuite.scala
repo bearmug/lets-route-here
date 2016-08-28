@@ -8,12 +8,12 @@ import org.scalatest.junit.JUnitRunner
 class EnginePureFuncSuite extends FunSuite {
 
   test("engine route cost is 0") {
-    val engine = new EngineInteropFunc(Array())
+    val engine = new EnginePureFunc(Array())
     assertResult(Array())(engine.route("source", "destination"))
   }
 
   test("engine tell that nearby is nothing") {
-    val engine = new EngineInteropFunc(Array())
+    val engine = new EnginePureFunc(Array())
     assertResult(Array())(engine.nearby("source", 100))
   }
 

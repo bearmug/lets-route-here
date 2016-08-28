@@ -11,7 +11,9 @@ class EngineInteropFuncSuite extends FunSuite {
 
   test("engine route cost is 0") {
     val engine = RoutingEngine.interop(Array())
-    assertResult(Array())(engine.route("source", "destination"))
+    assertResult(
+      "Error: No route from source to destination")(
+      engine.route("source", "destination"))
   }
 
   test("engine tell that nearby is nothing") {
@@ -23,7 +25,9 @@ class EngineInteropFuncSuite extends FunSuite {
     val engine = RoutingEngine.interop(Array(
       new RouteLeg("A", "B", 100)))
 
-    assertResult(Array[NodeVertice]())(engine.route("A", "None"))
+    assertResult(
+      "Error: No route from A to None")(
+      engine.route("A", "None"))
   }
 
 
@@ -31,10 +35,7 @@ class EngineInteropFuncSuite extends FunSuite {
     val engine = RoutingEngine.interop(Array(
       new RouteLeg("A", "B", 100)))
 
-    assertResult(Array[NodeVertice](
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100))
-    )(engine.route("A", "B"))
+    engine.route("A", "B") == "A -> B : 100"
   }
 
   test("route through two vertices loop") {
@@ -42,10 +43,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("A", "B", 100),
       new RouteLeg("B", "A", 200)))
 
-    assertResult(Array(
-      new NodeVertice("B", 0),
-      new NodeVertice("A", 200))
-    )(engine.route("B", "A"))
+    engine.route("B", "A") == "B -> A : 200"
   }
 
   test("build triangle route") {
@@ -54,11 +52,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("B", "C", 100),
       new RouteLeg("A", "C", 201)))
 
-    assertResult(Array(
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100),
-      new NodeVertice("C", 200))
-    )(engine.route("A", "C"))
+    engine.route("A", "C") == "A -> B -> C : 200"
   }
 
   test("build four vertices route") {
@@ -71,12 +65,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("A", "D", 1000),
       new RouteLeg("D", "A", 100)))
 
-    assertResult(Array(
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100),
-      new NodeVertice("D", 200),
-      new NodeVertice("C", 300))
-    )(engine.route("A", "C"))
+    engine.route("A", "C") == "A -> B -> D -> C"
   }
 
   test("detect chained shortest path") {
@@ -88,14 +77,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("E", "F", 100),
       new RouteLeg("A", "F", 1000)))
 
-    assertResult(Array(
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100),
-      new NodeVertice("C", 200),
-      new NodeVertice("D", 300),
-      new NodeVertice("E", 400),
-      new NodeVertice("F", 500))
-    )(engine.route("A", "F"))
+    engine.route("A", "F") == "A -> B -> C -> D -> E -> F : 500"
   }
 
   test("chained path with loop") {
@@ -109,14 +91,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("G", "F", 1),
       new RouteLeg("A", "F", 1000)))
 
-    assertResult(Array(
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100),
-      new NodeVertice("C", 200),
-      new NodeVertice("D", 300),
-      new NodeVertice("E", 400),
-      new NodeVertice("F", 500))
-    )(engine.route("A", "F"))
+    engine.route("A", "F") == "A -> B -> C -> D -> E -> F : 500"
   }
 
   test("two branches path") {
@@ -127,12 +102,7 @@ class EngineInteropFuncSuite extends FunSuite {
       new RouteLeg("A", "AA", 1),
       new RouteLeg("AA", "AAA", 1)))
 
-    assertResult(Array(
-      new NodeVertice("A", 0),
-      new NodeVertice("B", 100),
-      new NodeVertice("C", 200),
-      new NodeVertice("D", 300))
-    )(engine.route("A", "D"))
+    engine.route("A", "D") == "A -> B -> C -> D : 300"
   }
 
   test("nearby is empty") {

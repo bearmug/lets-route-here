@@ -29,7 +29,7 @@ public class EngineClassic implements RoutingEngine {
      * @return route cost
      */
     @Override
-    public NodeVertice[] route(String source, String destination) {
+    public String route(String source, String destination) {
 
         NavigableSet<NodeVertice> set = new TreeSet<>();
         Set<String> visitedNodes = new HashSet<>();
@@ -42,12 +42,15 @@ public class EngineClassic implements RoutingEngine {
             // target node detected
             if (destination.equals(current.getName())) {
                 List<NodeVertice> res = new ArrayList<>();
+                long cost = current.getCost();
                 while (current != null) {
                     res.add(current);
                     current = current.getParent();
                 }
                 Collections.reverse(res);
-                return res.toArray(new NodeVertice[]{});
+                return res.stream()
+                        .map(NodeVertice::getName)
+                        .collect(Collectors.joining(" -> ")) + " : " + cost;
             }
 
             // deepen search tree
@@ -62,7 +65,7 @@ public class EngineClassic implements RoutingEngine {
                 set.add(new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost()));
             }
         }
-        return new NodeVertice[]{};
+        return String.format("Error: No route from %s to %s", source, destination);
     }
 
     @Override
