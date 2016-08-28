@@ -1,6 +1,5 @@
 package org.bearmug.engine
 
-import org.bearmug.vert.NodeVertice
 import org.bearmug.{RouteLeg, RoutingEngine}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -11,23 +10,19 @@ class EngineInteropFuncSuite extends FunSuite {
 
   test("engine route cost is 0") {
     val engine = RoutingEngine.interop(Array())
-    assertResult(
-      "Error: No route from source to destination")(
-      engine.route("source", "destination"))
+    assert(engine.route("source", "destination") == "Error: No route from source to destination")
   }
 
   test("engine tell that nearby is nothing") {
     val engine = RoutingEngine.interop(Array())
-    assertResult(Array())(engine.nearby("source", 100))
+    assertResult("source: 0")(engine.nearby("source", 100))
   }
 
   test("ignore unknown destination") {
     val engine = RoutingEngine.interop(Array(
       new RouteLeg("A", "B", 100)))
 
-    assertResult(
-      "Error: No route from A to None")(
-      engine.route("A", "None"))
+    engine.route("A", "None") == "Error: No route from A to None"
   }
 
 
@@ -35,7 +30,7 @@ class EngineInteropFuncSuite extends FunSuite {
     val engine = RoutingEngine.interop(Array(
       new RouteLeg("A", "B", 100)))
 
-    engine.route("A", "B") == "A -> B : 100"
+    engine.route("A", "B") === "A -> B : 100"
   }
 
   test("route through two vertices loop") {

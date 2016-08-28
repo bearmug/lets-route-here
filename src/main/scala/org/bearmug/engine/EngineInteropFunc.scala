@@ -16,6 +16,9 @@ class EngineInteropFunc(legs: Array[RouteLeg]) extends RoutingEngine {
 
   override def route(source: String, destination: String): String = {
 
+    def complete(n: NodeVertice) =
+      destination.eq(n.getName)
+
     @tailrec
     def routeTail(set: TreeSet[NodeVertice], visited: Set[String]): NodeVertice = {
 
