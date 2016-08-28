@@ -3,10 +3,8 @@ package org.bearmug.engine;
 import org.bearmug.RouteLeg;
 import org.bearmug.RoutingEngine;
 import org.bearmug.vert.NodeVertice;
-import org.bearmug.vert.RouteVertice;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -15,16 +13,11 @@ import java.util.stream.Collectors;
  */
 public class EngineClassic implements RoutingEngine {
 
-    private final Map<String, RouteVertice> directMap = new HashMap<>();
+    private final Map<String, List<RouteLeg>> directMap;
 
     public EngineClassic(RouteLeg[] legs) {
-        Arrays.stream(legs)
-                .collect(Collectors.collectingAndThen(
-                        Collectors.groupingBy(RouteLeg::getSrc), Function.identity()))
-                .entrySet()
-                .forEach(e -> {
-                    directMap.put(e.getKey(), new RouteVertice(e.getKey(), e.getValue()));
-                });
+        directMap = Arrays.stream(legs)
+                .collect(Collectors.groupingBy(RouteLeg::getSrc));
     }
 
     /**
@@ -58,15 +51,15 @@ public class EngineClassic implements RoutingEngine {
             }
 
             // deepen search tree
-            RouteVertice routeVertice = directMap.get(current.getName());
-            if (routeVertice == null) {
+            List<RouteLeg> legs = directMap.get(current.getName());
+            if (legs == null) {
                 continue;
             }
-            for (Map.Entry<String, Long> e : routeVertice.getDirectPeers().entrySet()) {
-                if (visitedNodes.contains(e.getKey())) {
+            for (RouteLeg leg : legs) {
+                if (visitedNodes.contains(leg.getDest())) {
                     continue;
                 }
-                set.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
+                set.add(new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost()));
             }
         }
         return new NodeVertice[]{};
@@ -81,16 +74,16 @@ public class EngineClassic implements RoutingEngine {
             NodeVertice current = stack.pop();
             res.add(current.getName());
 
-            RouteVertice routeVertice = directMap.get(current.getName());
-            if (routeVertice == null) {
+            List<RouteLeg> legs = directMap.get(current.getName());
+            if (legs == null) {
                 continue;
             }
 
-            for (Map.Entry<String, Long> e : routeVertice.getDirectPeers().entrySet()) {
-                if (res.contains(e.getKey()) || current.getCost() + e.getValue() > maxTravelTime) {
+            for (RouteLeg leg : legs) {
+                if (res.contains(leg.getDest()) || current.getCost() + leg.getCost() > maxTravelTime) {
                     continue;
                 }
-                stack.add(new NodeVertice(e.getKey(), current, current.getCost() + e.getValue()));
+                stack.add(new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost()));
             }
         }
         res.remove(source);
