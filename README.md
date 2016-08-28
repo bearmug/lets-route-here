@@ -6,9 +6,12 @@ This repo contains solution for routing problem with two cases:
  - find nearest points
  
 # Usage
-Just type *gradlew run*
+Just type *gradle run* to start application. Default Java implementation
+to be used at the moment. Please follow provided instructions then.
 
 ## Choose implementation
+At the moment *gradle run* using Java implementation only.
+
 ## Populate engine with data
 ## Calculate route
 ## Calculate nearest points
