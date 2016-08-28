@@ -9,7 +9,7 @@ class EnginePureFuncSuite extends FunSuite {
 
   test("engine route cost is 0") {
     val engine = new EnginePureFunc(Array())
-    assertResult(Array())(engine.route("source", "destination"))
+    engine.route("source", "destination") == "Error: No route from source to destination"
   }
 
   test("engine tell that nearby is nothing") {
@@ -21,17 +21,14 @@ class EnginePureFuncSuite extends FunSuite {
     val engine = new EnginePureFunc(Array(
       Tuple3("A", "B", 100)))
 
-    assertResult(Array[(String, Long)]())(engine.route("A", "None"))
+    engine.route("A", "None") == "Error: No route from A to None"
   }
 
   test("route two vertices") {
     val engine = new EnginePureFunc(Array(
       Tuple3("A", "B", 100)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100))
-    )(engine.route("A", "B"))
+    engine.route("A", "B") == "A -> B : 100"
   }
 
   test("route through two vertices loop") {
@@ -39,10 +36,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("A", "B", 100),
       Tuple3("B", "A", 200)))
 
-    assertResult(Array(
-      Tuple2("B", 0),
-      Tuple2("A", 200))
-    )(engine.route("B", "A"))
+    engine.route("B", "A") == "B -> A : 200"
   }
 
   test("build triangle route") {
@@ -51,11 +45,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("B", "C", 100),
       Tuple3("A", "C", 201)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100),
-      Tuple2("C", 200))
-    )(engine.route("A", "C"))
+    engine.route("A", "C") == "A -> B -> C : 200"
   }
 
   test("build four vertices route") {
@@ -68,12 +58,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("A", "D", 1000),
       Tuple3("D", "A", 100)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100),
-      Tuple2("D", 200),
-      Tuple2("C", 300))
-    )(engine.route("A", "C"))
+    engine.route("A", "C") == "A -> B -> D -> C : 300"
   }
 
   test("detect chained shortest path") {
@@ -85,14 +70,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("E", "F", 100),
       Tuple3("A", "F", 1000)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100),
-      Tuple2("C", 200),
-      Tuple2("D", 300),
-      Tuple2("E", 400),
-      Tuple2("F", 500))
-    )(engine.route("A", "F"))
+    engine.route("A", "F") == "A -> B -> C -> D -> E -> F : 500"
   }
 
   test("chained path with loop") {
@@ -106,14 +84,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("G", "F", 1),
       Tuple3("A", "F", 1000)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100),
-      Tuple2("C", 200),
-      Tuple2("D", 300),
-      Tuple2("E", 400),
-      Tuple2("F", 500))
-    )(engine.route("A", "F"))
+    engine.route("A", "F") == "A -> B -> C -> D -> E -> F : 500"
   }
 
   test("two branches path") {
@@ -124,12 +95,7 @@ class EnginePureFuncSuite extends FunSuite {
       Tuple3("A", "AA", 1),
       Tuple3("AA", "AAA", 1)))
 
-    assertResult(Array(
-      Tuple2("A", 0),
-      Tuple2("B", 100),
-      Tuple2("C", 200),
-      Tuple2("D", 300))
-    )(engine.route("A", "D"))
+    engine.route("A", "D") == "A -> B -> C -> D : 300"
   }
 
   test("nearby is empty") {

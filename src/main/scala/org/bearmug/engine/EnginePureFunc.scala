@@ -14,7 +14,7 @@ class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
   val none: Node = new Node("None", 0L, null)
   val ord: Ordering[Node] = Ordering.by(n => n.cost)
 
-  override def route(source: String, destination: String): Array[(String, Long)] = {
+  override def route(source: String, destination: String): String = {
 
     @tailrec
     def routeTail(set: TreeSet[(Node)], visited: Set[String]): Node = {
@@ -35,8 +35,10 @@ class EnginePureFunc(legs: Array[(String, String, Long)]) extends Routing {
     }
 
     @tailrec
-    def unwrap(node: Node, acc: List[(String, Long)]): Array[(String, Long)] =
-      if (none.equals(node)) acc.toArray
+    def unwrap(node: Node, acc: List[(String, Long)]): String =
+      if (none.equals(node))
+        if (acc.isEmpty) "Error: No route from $source to $destination"
+        else acc.map(n => n._1 + ":" + n._2).mkString(", ")
       else unwrap(node.parent.getOrElse(none), List((node.name, node.cost)) ++ acc)
 
     unwrap(
