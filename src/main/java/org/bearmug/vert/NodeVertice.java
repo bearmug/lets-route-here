@@ -1,12 +1,13 @@
 package org.bearmug.vert;
 
-public class NodeVertice extends Vertice implements Comparable {
+public class NodeVertice implements Comparable {
 
-    final long cost;
-    final NodeVertice parent;
+    private final String name;
+    private final long cost;
+    private final NodeVertice parent;
 
     public NodeVertice(String name, NodeVertice parent, long cost) {
-        super(name);
+        this.name = name;
         this.cost = cost;
         this.parent = parent;
     }
@@ -23,9 +24,27 @@ public class NodeVertice extends Vertice implements Comparable {
         return parent;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int compareTo(Object o) {
         NodeVertice other = (NodeVertice) o;
         return Long.compare(getCost(), other.getCost());
+    }
+
+    @Override
+    public final int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != NodeVertice.class) {
+            return false;
+        }
+        NodeVertice other = (NodeVertice) obj;
+        return name.equals(other.getName());
     }
 }

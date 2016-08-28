@@ -2,69 +2,56 @@ package org.bearmug.engine;
 
 import org.bearmug.RouteLeg;
 import org.bearmug.RoutingEngine;
-import org.bearmug.vert.NodeVertice;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class EngineClassicTest {
 
     @Test
     public void testEmptyRouteSet() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{});
-        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("A", "B")));
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{});
+        assertEquals("Error: No route from A to B", engine.route("A", "B"));
     }
 
     @Test
     public void testAlienSource() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("None", "B")));
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("Error: No route from None to B", engine.route("None", "B"));
     }
 
     @Test
     public void testAlienDestination() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertTrue(Arrays.equals(new NodeVertice[]{}, engine.route("A", "None")));
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("Error: No route from A to None", engine.route("A", "None"));
     }
 
     @Test
     public void testTwoVertices() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{new NodeVertice("A", 0), new NodeVertice("B", 100)},
-                engine.route("A", "B")));
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("A -> B : 100", engine.route("A", "B"));
     }
 
     @Test
     public void testTwoVerticesLoop() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "A", 200)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{new NodeVertice("B", 0), new NodeVertice("A", 200)},
-                engine.route("B", "A")));
+        assertEquals("B -> A : 200", engine.route("B", "A"));
     }
 
     @Test
     public void testTriangle() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("A", "C", 201)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{
-                        new NodeVertice("A", 0),
-                        new NodeVertice("B", 100),
-                        new NodeVertice("C", 200)},
-                engine.route("A", "C")));
+        assertEquals("A -> B -> C : 200", engine.route("A", "C"));
     }
 
     @Test
     public void testFourVertices() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 1000),
                 new RouteLeg("A", "C", 1000),
@@ -72,38 +59,24 @@ public class EngineClassicTest {
                 new RouteLeg("D", "C", 100),
                 new RouteLeg("A", "D", 1000),
                 new RouteLeg("D", "A", 100)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{
-                        new NodeVertice("A", 0),
-                        new NodeVertice("B", 100),
-                        new NodeVertice("D", 200),
-                        new NodeVertice("C", 300)},
-                engine.route("A", "C")));
+        assertEquals("A -> B -> D -> C : 300", engine.route("A", "C"));
     }
 
     @Test
     public void testChainedShortPath() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("C", "D", 100),
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{
-                        new NodeVertice("A", 0),
-                        new NodeVertice("B", 100),
-                        new NodeVertice("C", 200),
-                        new NodeVertice("D", 300),
-                        new NodeVertice("E", 400),
-                        new NodeVertice("F", 500)},
-                engine.route("A", "F")));
+        assertEquals("A -> B -> C -> D -> E -> F : 500", engine.route("A", "F"));
     }
 
     @Test
     public void testChainedPathLoop() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("C", "D", 100),
@@ -112,106 +85,92 @@ public class EngineClassicTest {
                 new RouteLeg("G", "E", 1),
                 new RouteLeg("G", "F", 1),
                 new RouteLeg("A", "F", 1000)});
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{
-                        new NodeVertice("A", 0),
-                        new NodeVertice("B", 100),
-                        new NodeVertice("C", 200),
-                        new NodeVertice("D", 300),
-                        new NodeVertice("E", 400),
-                        new NodeVertice("F", 500)},
-                engine.route("A", "F")));
+        assertEquals("A -> B -> C -> D -> E -> F : 500", engine.route("A", "F"));
     }
 
     @Test
     public void testTwoBranchesPath() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("C", "D", 100),
                 new RouteLeg("A", "AA", 1),
                 new RouteLeg("AA", "AAA", 1)});
 
-        assertTrue(Arrays.equals(
-                new NodeVertice[]{
-                        new NodeVertice("A", 0),
-                        new NodeVertice("B", 100),
-                        new NodeVertice("C", 200),
-                        new NodeVertice("D", 300)},
-                engine.route("A", "D")));
+        assertEquals("A -> B -> C -> D : 300", engine.route("A", "D"));
     }
 
     @Test
     public void testNearbyIsEmpty() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("source", 100).length);
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("Error: Nothing nearby source within 100 range", engine.nearby("source", 100));
     }
 
     @Test
     public void testNearbyEmptyDirection() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("B", 100).length);
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("Error: Nothing nearby B within 100 range", engine.nearby("B", 100));
     }
 
     @Test
     public void testNearbySingle() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(1, engine.nearby("A", 100).length);
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("B: 100", engine.nearby("A", 100));
     }
 
     @Test
     public void testNearbySingleTooFar() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("A", 99).length);
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
+        assertEquals("Error: Nothing nearby A within 99 range", engine.nearby("A", 99));
     }
 
     @Test
     public void testNearbyTwoPaths() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("C", "D", 100),
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertEquals(5, engine.nearby("A", 500).length);
+        assertEquals("B: 100, C: 200, D: 300, E: 400, F: 500", engine.nearby("A", 500));
     }
 
     @Test
     public void testNearbyTwoPathsReachable() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("C", "D", 100),
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertEquals(5, engine.nearby("A", 1000).length);
+        assertEquals("B: 100, C: 200, D: 300, E: 400, F: 500", engine.nearby("A", 1000));
     }
 
     @Test
     public void testNearbyTwoVerticesLoop() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "A", 200)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(0, engine.nearby("B", 100).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("Error: Nothing nearby B within 100 range", engine.nearby("B", 100));
     }
 
     @Test
     public void testNearbyTriangle() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("A", "C", 201)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(2, engine.nearby("A", 300).length);
-        assertEquals(2, engine.nearby("A", 200).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("B: 100, C: 200", engine.nearby("A", 300));
+        assertEquals("B: 100, C: 200", engine.nearby("A", 200));
     }
 
     @Test
     public void testNearbyFourVertices() {
-        RoutingEngine engine = new EngineClassic(new RouteLeg[]{
+        RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 1000),
                 new RouteLeg("A", "C", 1000),
@@ -219,10 +178,10 @@ public class EngineClassicTest {
                 new RouteLeg("D", "C", 100),
                 new RouteLeg("A", "D", 1000),
                 new RouteLeg("D", "A", 100)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(3, engine.nearby("A", 500).length);
-        assertEquals(2, engine.nearby("A", 200).length);
-        assertEquals(1, engine.nearby("B", 100).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("B: 100, D: 200, C: 300", engine.nearby("A", 500));
+        assertEquals("B: 100, D: 200", engine.nearby("A", 200));
+        assertEquals("D: 100", engine.nearby("B", 100));
     }
 }
 

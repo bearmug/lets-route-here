@@ -1,10 +1,19 @@
 package org.bearmug;
 
-import org.bearmug.vert.NodeVertice;
+import org.bearmug.engine.EngineClassic;
+import org.bearmug.engine.EngineInteropFunc;
 
 public interface RoutingEngine {
 
-    NodeVertice[] route(String source, String destination);
+    static RoutingEngine classic(RouteLeg[] legs) {
+        return new EngineClassic(legs);
+    }
 
-    String[] nearby(String source, long maxTravelTime);
+    static RoutingEngine interop(RouteLeg[] legs) {
+        return new EngineInteropFunc(legs);
+    }
+
+    String route(String source, String destination);
+
+    String nearby(String source, long maxTravelTime);
 }
