@@ -99,29 +99,29 @@ public class EngineClassicTest {
 
         assertEquals("A -> B -> C -> D : 300", engine.route("A", "D"));
     }
-/*
+
     @Test
     public void testNearbyIsEmpty() {
         RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("source", 100).length);
+        assertEquals("Error: Nothing nearby source within 100 range", engine.nearby("source", 100));
     }
 
     @Test
     public void testNearbyEmptyDirection() {
         RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("B", 100).length);
+        assertEquals("Error: Nothing nearby B within 100 range", engine.nearby("B", 100));
     }
 
     @Test
     public void testNearbySingle() {
         RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(1, engine.nearby("A", 100).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
     }
 
     @Test
     public void testNearbySingleTooFar() {
         RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{new RouteLeg("A", "B", 100)});
-        assertEquals(0, engine.nearby("A", 99).length);
+        assertEquals("Error: Nothing nearby A within 99 range", engine.nearby("A", 99));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class EngineClassicTest {
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertEquals(5, engine.nearby("A", 500).length);
+        assertEquals("B: 100, C: 200, D: 300, E: 400, F: 500", engine.nearby("A", 500));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class EngineClassicTest {
                 new RouteLeg("D", "E", 100),
                 new RouteLeg("E", "F", 100),
                 new RouteLeg("A", "F", 1000)});
-        assertEquals(5, engine.nearby("A", 1000).length);
+        assertEquals("B: 100, C: 200, D: 300, E: 400, F: 500", engine.nearby("A", 1000));
     }
 
     @Test
@@ -153,8 +153,8 @@ public class EngineClassicTest {
         RoutingEngine engine = RoutingEngine.classic(new RouteLeg[]{
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "A", 200)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(0, engine.nearby("B", 100).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("Error: Nothing nearby B within 100 range", engine.nearby("B", 100));
     }
 
     @Test
@@ -163,9 +163,9 @@ public class EngineClassicTest {
                 new RouteLeg("A", "B", 100),
                 new RouteLeg("B", "C", 100),
                 new RouteLeg("A", "C", 201)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(2, engine.nearby("A", 300).length);
-        assertEquals(2, engine.nearby("A", 200).length);
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("B: 100, C: 200", engine.nearby("A", 300));
+        assertEquals("B: 100, C: 200", engine.nearby("A", 200));
     }
 
     @Test
@@ -178,10 +178,10 @@ public class EngineClassicTest {
                 new RouteLeg("D", "C", 100),
                 new RouteLeg("A", "D", 1000),
                 new RouteLeg("D", "A", 100)});
-        assertEquals(1, engine.nearby("A", 100).length);
-        assertEquals(3, engine.nearby("A", 500).length);
-        assertEquals(2, engine.nearby("A", 200).length);
-        assertEquals(1, engine.nearby("B", 100).length);
-    }*/
+        assertEquals("B: 100", engine.nearby("A", 100));
+        assertEquals("B: 100, D: 200, C: 300", engine.nearby("A", 500));
+        assertEquals("B: 100, D: 200", engine.nearby("A", 200));
+        assertEquals("D: 100", engine.nearby("B", 100));
+    }
 }
 

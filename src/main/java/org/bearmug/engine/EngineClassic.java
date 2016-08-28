@@ -30,27 +30,26 @@ public class EngineClassic implements RoutingEngine {
      */
     @Override
     public String route(String source, String destination) {
+        return process(source, Converter.routeConverter(source, destination));
+    }
 
+    @Override
+    public String nearby(String source, long maxTravelTime) {
+        return process(source, Converter.nearbyConverter(source, maxTravelTime));
+    }
+
+    private String process(String source, Converter c) {
         NavigableSet<NodeVertice> set = new TreeSet<>();
-        Set<String> visitedNodes = new HashSet<>();
+        Set<NodeVertice> visitedNodes = new HashSet<>();
         set.add(new NodeVertice(source, 0));
         while (!set.isEmpty()) {
             // walk through the graph
             NodeVertice current = set.pollFirst();
-            visitedNodes.add(current.getName());
+            visitedNodes.add(current);
 
             // target node detected
-            if (destination.equals(current.getName())) {
-                List<NodeVertice> res = new ArrayList<>();
-                long cost = current.getCost();
-                while (current != null) {
-                    res.add(current);
-                    current = current.getParent();
-                }
-                Collections.reverse(res);
-                return res.stream()
-                        .map(NodeVertice::getName)
-                        .collect(Collectors.joining(" -> ")) + " : " + cost;
+            if (c.enough(current)) {
+                return c.result(current, visitedNodes);
             }
 
             // deepen search tree
@@ -59,37 +58,14 @@ public class EngineClassic implements RoutingEngine {
                 continue;
             }
             for (RouteLeg leg : legs) {
-                if (visitedNodes.contains(leg.getDest())) {
+                NodeVertice vertice = new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost());
+                if (c.shouldContinue(vertice, visitedNodes)) {
                     continue;
                 }
-                set.add(new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost()));
+                set.add(vertice);
             }
         }
-        return String.format("Error: No route from %s to %s", source, destination);
-    }
-
-    @Override
-    public String[] nearby(String source, long maxTravelTime) {
-        Stack<NodeVertice> stack = new Stack<>();
-        Set<String> res = new HashSet<>();
-        stack.push(new NodeVertice(source, 0));
-        while (!stack.empty()) {
-            NodeVertice current = stack.pop();
-            res.add(current.getName());
-
-            List<RouteLeg> legs = directMap.get(current.getName());
-            if (legs == null) {
-                continue;
-            }
-
-            for (RouteLeg leg : legs) {
-                if (res.contains(leg.getDest()) || current.getCost() + leg.getCost() > maxTravelTime) {
-                    continue;
-                }
-                stack.add(new NodeVertice(leg.getDest(), current, current.getCost() + leg.getCost()));
-            }
-        }
-        res.remove(source);
-        return res.toArray(new String[]{});
+        visitedNodes.remove(new NodeVertice(source, null, 0));
+        return c.complete(visitedNodes);
     }
 }

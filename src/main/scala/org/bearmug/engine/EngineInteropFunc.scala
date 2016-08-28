@@ -37,7 +37,7 @@ class EngineInteropFunc(legs: Array[RouteLeg]) extends RoutingEngine {
     @tailrec
     def unwrap(node: NodeVertice, acc: List[NodeVertice]): String =
       if (none.equals(node))
-        if (acc.isEmpty) s"Error: No route from $source to $destination"
+        if (acc.isEmpty) "Error: No route from $source to $destination"
         else acc.map(n => n.getName + ":" + n.getCost).mkString(", ")
       else {
         val parent = if (node.getParent == null) none
@@ -50,11 +50,15 @@ class EngineInteropFunc(legs: Array[RouteLeg]) extends RoutingEngine {
   }
 
 
-  override def nearby(source: String, maxTravelTime: Long): Array[String] = {
+  override def nearby(source: String, maxTravelTime: Long): String = {
 
     @tailrec
-    def nearbyTail(stack: List[NodeVertice], acc: Set[String]): Set[String] = {
-      if (stack.isEmpty) acc
+    def nearbyTail(stack: List[NodeVertice], acc: Set[NodeVertice]): String = {
+      if (stack.isEmpty)
+        if (acc.isEmpty) s"Error: Nothing nearby $source within $maxTravelTime range"
+        else acc
+          .map(n => n.getName + ": " + n.getCost)
+          .mkString(", ")
       else {
         val current = stack.head
         val nestedSet = if (!map.contains(current.getName)) Set.empty[NodeVertice]
@@ -63,11 +67,11 @@ class EngineInteropFunc(legs: Array[RouteLeg]) extends RoutingEngine {
           .map { l => new NodeVertice(l.getDest, current.getCost + l.getCost) }
           .toList
 
-        nearbyTail(stack.tail ++ nestedSet, acc + current.getName)
+        nearbyTail(stack.tail ++ nestedSet, acc + current)
       }
     }
 
     val srcNode: NodeVertice = new NodeVertice(source, null, 0L)
-    (nearbyTail(List(srcNode), Set.empty) - source).toArray[String]
+    nearbyTail(List(srcNode), TreeSet()(ord))
   }
 }

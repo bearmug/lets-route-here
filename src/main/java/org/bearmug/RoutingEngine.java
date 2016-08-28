@@ -15,5 +15,5 @@ public interface RoutingEngine {
 
     String route(String source, String destination);
 
-    String[] nearby(String source, long maxTravelTime);
+    String nearby(String source, long maxTravelTime);
 }
