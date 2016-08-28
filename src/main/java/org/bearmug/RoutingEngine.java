@@ -6,11 +6,11 @@ import org.bearmug.vert.NodeVertice;
 
 public interface RoutingEngine {
 
-    static RoutingEngine engineClassic(RouteLeg[] legs) {
+    static RoutingEngine classic(RouteLeg[] legs) {
         return new EngineClassic(legs);
     }
 
-    static RoutingEngine engineInterop(RouteLeg[] legs) {
+    static RoutingEngine interop(RouteLeg[] legs) {
         return new EngineInteropFunc(legs);
     }
 
