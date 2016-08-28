@@ -17,7 +17,24 @@ At the moment *gradle run* using Java implementation only.
 ## Calculate nearest points
 # Functional
 ## Java Solution
+Java functional complete and tested for now. It is provided with 
+*EngineClassic* class.
+
 ## Interoperable solution
+Generated for Java/Scala compatibility demo at *EngineInteropFunc*. Java 
+POJO beans used for simplification. Also tail recursion approach used. 
+Requires output transformation for proper usage.
+
 ## Pure Scala solution
+Located under *EnginePureFunc*. At the moment has implementation with
+non-String output
+
 # Testing approach
+Travis CI build and Codecov code coverage tools configured for continuous 
+quality monitoring.
+
+At the moment there is unit-tests source-set.
+
 # Benchmarks
+JMH benchmark supposed to be configured to compare 3 implementations 
+performance.
