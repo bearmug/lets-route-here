@@ -77,7 +77,8 @@ public class Console {
 
         } catch (IOException
                 | ArrayIndexOutOfBoundsException
-                | IllegalArgumentException e) {
+                | NumberFormatException
+                | IllegalStateException e) {
             System.out.println(">>>Problem solution error: " + e.getMessage());
         }
         return true;
